@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Lista de Ingresos</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Fecha de pago</th>
+                <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pago in pagos %}
+            {% if pago.Tipo == 'Gasto' %}
+            <tr>
+                <td style="background-color: #FF3838;">{{ pago.Nombre }}</td>
+                <td style="background-color: #FF3838">{{ pago.Cantidad }}</td>
+                <td style="background-color: #FF3838;">{{ pago.FechaPago }}</td>
+                <td style="background-color: #FF3838;">{{ pago.Total }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td style="background-color: #4EFC43;">{{ pago.Nombre }}</td>
+                <td style="background-color: #4EFC43">{{ pago.Cantidad }}</td>
+                <td style="background-color: #4EFC43;">{{ pago.FechaPago }}</td>
+                <td style="background-color: #4EFC43;">{{ pago.Total }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

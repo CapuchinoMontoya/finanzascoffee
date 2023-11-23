@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg rounded-3" style="background-color: #d2b48c;">
+                <div class="card-body p-5">
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <img src="https://static1.squarespace.com/static/63dc43bd20b8ee75ce23df55/t/63e1433978c1693f6438c75e/1675707193281/CC%2BLogo%2BRound.png?format=1500w"
+                                class="img-fluid mx-auto d-block">
+                        </div>
+                        <div class="col-md-6">
+                            <h2 class="card-title text-center" style="color: #8b4513;">Agregar Ingreso</h2>
+
+                            <form action="/tasks/createIngreso/" method="post" class="needs-validation" novalidate>
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+
+                                <div class="mb-3 form-group">
+                                    <label for="nombreIngreso" style="color: #8b4513;">Nombre del Ingreso:</label>
+                                    <input type="text" class="form-control" id="id_nombreIngreso" name="nombreIngreso"
+                                        placeholder="Nombre de tu Ingreso" required>
+                                    <!-- {{ form.nombreIngreso }} -->
+                                    {% if form.nombreIngreso.errors %}
+                                    <small class="text-danger">{{ form.nombreIngreso.errors|join:", " }}</small>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3 form-group">
+                                    <label for="cantidadIngreso" style="color: #8b4513;">Cantidad del Ingreso:</label>
+                                    <input type="number" class="form-control" id="id_cantidadIngreso"
+                                        name="cantidadIngreso" placeholder="Cantidad de tu Ingreso" required>
+                                    <!-- {{ form.cantidadIngreso }} -->
+                                    {% if form.cantidadIngreso.errors %}
+                                    <small class="text-danger">{{ form.cantidadIngreso.errors|join:", " }}</small>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-3 form-group">
+                                    <label for="fechaIngreso" style="color: #8b4513;">Fecha del Ingreso:</label>
+                                    <input type="date" name="fechaIngreso" class="form-control"
+                                        pattern="^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$" required/>
+                                    {% if form.fechaIngreso.errors %}
+                                    <small class="text-danger">{{ form.fechaIngreso.errors|join:", " }}</small>
+                                    {% endif %}
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block rounded-pill"
+                                    style="background-color: #8b4513; color: #fff;">Guardar Ingreso</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
