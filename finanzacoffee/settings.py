@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'finanzacoffee.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
-        default=os.environ.get('DATABASE_URL', 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')),
+        default='postgresql://postgres:postgres@localhost:5432/mysite',
         conn_max_age=600
     )
 }
