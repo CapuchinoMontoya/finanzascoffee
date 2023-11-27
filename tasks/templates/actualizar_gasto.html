@@ -12,17 +12,20 @@
                                 class="img-fluid mx-auto d-block">
                         </div>
                         <div class="col-md-6">
-                            <h2 class="card-title text-center" style="color: #8b4513;">Agregar Gasto</h2>
-
-                            <form action="/tasks/createGasto/" method="post" class="needs-validation" novalidate>
+                            <h2 class="card-title text-center" style="color: #8b4513;">Editar Gasto</h2>
+                            {% if error %}
+                            <div class="alert alert-danger" role="alert"
+                                style="background-color: #cd853f; color: #fff;">
+                                {{ error }}
+                            </div>
+                            {% endif %}
+                            <form method="post" class="needs-validation" novalidate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
 
                                 <div class="mb-3 form-group">
                                     <label for="nombreGasto" style="color: #8b4513;">Nombre del Gasto:</label>
-                                    <input type="text" class="form-control" id="id_nombreGasto" name="nombreGasto"
-                                        placeholder="Nombre de tu Gasto" required>
-                                    <!-- {{ form.nombreIngreso }} -->
+                                    {{ form.nombreGasto }}
                                     {% if form.nombreGasto.errors %}
                                     <small class="text-danger">{{ form.nombreGasto.errors|join:", " }}</small>
                                     {% endif %}
@@ -30,9 +33,7 @@
 
                                 <div class="mb-3 form-group">
                                     <label for="cantidadGasto" style="color: #8b4513;">Cantidad del Gasto:</label>
-                                    <input type="number" class="form-control" id="id_cantidadGasto"
-                                        name="cantidadGasto" placeholder="Cantidad de tu Gasto" required>
-                                    <!-- {{ form.cantidadIngreso }} -->
+                                    {{ form.cantidadGasto }}
                                     {% if form.cantidadGasto.errors %}
                                     <small class="text-danger">{{ form.cantidadGasto.errors|join:", " }}</small>
                                     {% endif %}
@@ -40,8 +41,7 @@
 
                                 <div class="mb-3 form-group">
                                     <label for="fechaGasto" style="color: #8b4513;">Fecha para pagar:</label>
-                                    <input type="date" name="fechaGasto" class="form-control"
-                                        pattern="^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$" required/>
+                                    {{ form.fechaGasto }}
                                     {% if form.fechaGasto.errors %}
                                     <small class="text-danger">{{ form.fechaGasto.errors|join:", " }}</small>
                                     {% endif %}
