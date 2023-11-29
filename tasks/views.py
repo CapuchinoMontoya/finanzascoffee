@@ -7,12 +7,40 @@ from .forms import CreateIngresosForm, CreateGastosForm
 from .models import TblIngresos, TblGastos
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.http import JsonResponse
+import json
 
 # Create your views here.
 
 
 def home(request):
     return render(request, 'home.html')
+
+def calendario(request):
+    ingresos = TblIngresos.objects.filter(usuario=request.user)
+    gastos = TblGastos.objects.filter(usuario=request.user)
+
+    eventos = []
+    for ingreso in ingresos:
+        fecha_str = ingreso.fechaIngreso.strftime('%Y-%m-%d')
+        eventos.append({
+            'title': ingreso.nombreIngreso,
+            'date': fecha_str,
+            'type': 'Ingreso'
+        })
+    for gasto in gastos:
+        fecha_str = gasto.fechaGasto.strftime('%Y-%m-%d')
+        eventos.append({
+            'title': gasto.nombreGasto,
+            'date': fecha_str,
+            'type': 'Gasto'
+        })
+    eventos = sorted(eventos, key=lambda x: x['date'])
+    eventos_json = json.dumps(eventos)
+
+    return render(request, 'calendario.html', {
+        'eventos_json': eventos_json
+    })
 
 def signup(request):
     if request.method == 'GET':
@@ -146,7 +174,6 @@ def actualizar_gasto(request, id):
 def signout(request):
     logout(request)
     return redirect('home')
-
 
 def signin(request):
     if request.method == 'GET':

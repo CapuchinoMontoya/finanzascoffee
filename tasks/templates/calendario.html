@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+    <meta charset='utf-8' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script>
+        var eventos = JSON.parse('{{ eventos_json|escapejs }}');
+        var fechaActual = new Date();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialDate: fechaActual,
+                events: eventos,
+                eventClassNames: function (arg) {
+                    return arg.event.extendedProps.type === 'Gasto' ? 'gasto-event' : 'ingreso-event';
+                }
+            });
+
+            calendar.render();
+        });
+
+        eventos.forEach(element => {
+            console.log(element);
+        });
+    </script>
+
+    <style>
+        .container {
+            display: flex;
+        }
+
+        #calendar {
+            flex: 1;
+        }
+
+        .legend-table {
+            width: 150px;
+            margin-left: 20px;
+            border-collapse: collapse;
+        }
+
+        .legend-table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .ingreso-cell {
+            background-color: blue;
+        }
+
+        .gasto-cell {
+            background-color: red;
+        }
+
+        .gasto-event {
+            background-color: red !important;
+            border: 1px solid red !important;
+            display: block;
+        }
+
+        .ingreso-event {
+            background-color: rgb(0, 153, 255) !important;
+            border: 1px solid rgb(0, 153, 255) !important;
+            display: block;
+        }
+
+        .legend-table {
+            border-collapse: collapse;
+            width: 15px;
+            height: 30px;
+        }
+
+        .legend-table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .ingreso-cell {
+            background-color: rgb(0, 153, 255);
+        }
+
+        .gasto-cell {
+            background-color: red;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <div id="calendar"></div>
+        <table class="legend-table">
+            <tbody>
+                <tr>
+                    <td class="ingreso-cell"></td>
+                    <td>Ingreso</td>
+                </tr>
+                <tr>
+                    <td class="gasto-cell"></td>
+                    <td>Gasto</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+{% endblock %}
