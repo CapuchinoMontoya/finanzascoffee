@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Credit Card</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card {
+            width: 300px;
+            height: 180px;
+            background: #bebec5;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            margin: 0 auto;
+            min-width: 300px;
+            max-width: 300px;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .shine {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: translateX(-100%);
+            animation: shine 3s infinite 1s;
+            width: 100%;
+            height: 100%;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            padding: 20px;
+            color: #fff;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .content h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .content span {
+            font-size: 16px;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Estilos para centrar el formulario */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .form-control {
+            margin-bottom: 10px;
+            width: 250px;
+        }
+
+        /* Media query para dispositivos móviles */
+        @media only screen and (max-width: 600px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card-container {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card-container">
+            <div class="card" id="creditCard">
+                <div class="shine"></div>
+                <div class="content">
+                    <h2 id="cardName">Nombre de la tarjeta</h2>
+                    <span id="cardNumber">xxxx xxxx xxxx xxxx</span>
+                    <span id="cardBalance">Balance: $ xxxx</span>
+                    <span id="cardDate">Fecha Pago: dd/mm/yyyy</span>
+                </div>
+            </div>
+        </div>
+
+        <form action="/tarjetas/addTarget/" id="targetForm" method="post" class="mt-3 needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="form-group">
+                <label for="nombreTarjeta" style="color: #8b4513;">Nombre de la tarjeta:</label>
+                {{ form.nombreTarjeta }}
+                {% if form.nombreTarjeta.errors %}
+                <small class="text-danger">{{ form.nombreTarjeta.errors|join:", " }}</small>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="numTarjeta" style="color: #8b4513;">Ultimos 4 digitos de la tarjeta:</label>
+                {{ form.numTarjeta }}
+                {% if form.numTarjeta.errors %}
+                <small class="text-danger">{{ form.numTarjeta.errors|join:", " }}</small>
+                {% endif %}
+            </div>
+
+            {{ form.cantidadDisponible }}
+
+            <div class="form-group">
+                <label for="fechaPago" style="color: #8b4513;">Fecha de corte:</label>
+                {{ form.fechaPago }}
+                {% if form.fechaPago.errors %}
+                <small class="text-danger">{{ form.fechaPago.errors|join:", " }}</small>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="tipoTarjeta" style="color: #8b4513;">Tipo de tarjeta:</label>
+                {{ form.tipoTarjeta }}
+                {% if form.tipoTarjeta.errors %}
+                <small class="text-danger">{{ form.tipoTarjeta.errors|join:", " }}</small>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block rounded-pill"
+                style="background-color: #8b4513; color: #fff;">Guardar Tarjeta</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get references to form fields and card elements
+            const form = document.getElementById('targetForm');
+            const cardName = document.getElementById('cardName');
+            const cardNumber = document.getElementById('cardNumber');
+            const cardBalance = document.getElementById('cardBalance');
+            const cardDate = document.getElementById('cardDate');
+            const cardElement = document.getElementById('creditCard');
+
+            // Add input event to form fields
+            form.addEventListener('input', function () {
+                // Dynamically update card elements
+                cardName.innerText = form.nombreTarjeta.value || 'Nombre de la tarjeta';
+                cardNumber.innerText = `xxxx xxxx xxxx ${form.numTarjeta.value || 'xxxx'}`;
+                cardBalance.innerText = `Balance: $${form.cantidadDisponible.value || 'xxxx'}`;
+                cardDate.innerText = `Fecha Pago: ${form.fechaPago.value || 'dd/mm/yyyy'}`;
+            });
+
+            // Add change event to tipoTarjeta select element
+            form.tipoTarjeta.addEventListener('change', function () {
+                const selectedType = form.tipoTarjeta.value;
+
+                switch (selectedType) {
+                    case 'Credito':
+                        cardElement.style.backgroundColor = '#8442F9'; // Purple
+                        break;
+                    case 'Debito':
+                        cardElement.style.backgroundColor = '#2DE6B1'; // Mint green
+                        break;
+                    case 'Prestamo':
+                        cardElement.style.backgroundColor = '#3E9AFD'; // Blue
+                        break;
+                    case 'Efectivo':
+                        cardElement.style.backgroundColor = '#14DC42'; // Green
+                        break;
+                    default:
+                        cardElement.style.backgroundColor = '#bebec5'; // Default gray
+                }
+            });
+        });
+    </script>
+</body>
+
+{% endblock %}

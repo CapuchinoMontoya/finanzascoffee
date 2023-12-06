@@ -47,6 +47,14 @@
                                     {% endif %}
                                 </div>
 
+                                <div class="mb-3 form-group">
+                                    <label for="tarjeta" style="color: #8b4513;">Tipo de Ingreso:</label>
+                                    {{ form.tarjeta }}
+                                    {% if form.tarjeta.errors %}
+                                    <small class="text-danger">{{ form.tarjeta.errors|join:", " }}</small>
+                                    {% endif %}
+                                </div>
+
                                 <button type="submit" class="btn btn-primary btn-block rounded-pill"
                                     style="background-color: #8b4513; color: #fff;">Actualizar Ingreso</button>
                             </form>

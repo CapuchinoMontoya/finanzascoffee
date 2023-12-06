@@ -1,52 +1,83 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center">Lista de Ingresos</h2>
-    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Cantidad</th>
-                    <th scope="col">Fecha de pago</th>
-                    <th scope="col">Total</th>
-                    <th scope="col">Actualizar</th>
-                    <th scope="col">Eliminar</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pago in pagos %}
-                {% if pago.Tipo == 'Gasto' %}
-                <tr>
-                    <td style="background-color: #FF3838;">{{ pago.Nombre }}</td>
-                    <td style="background-color: #FF3838">{{ pago.Cantidad }}</td>
-                    <td style="background-color: #FF3838;">{{ pago.FechaPago }}</td>
-                    <td style="background-color: #FF3838;">{{ pago.Total }}</td>
-                    <td style="background-color: #FF3838;">
-                        <a href="{% url 'actualizar_gasto' id=pago.id %}" class="btn btn-info">Actualizar</a>
-                    </td>
-                    <td style="background-color: #FF3838;">
-                        <a href="{% url 'eliminar_gasto' id=pago.id %}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">Eliminar</a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td style="background-color: #4EFC43;">{{ pago.Nombre }}</td>
-                    <td style="background-color: #4EFC43">{{ pago.Cantidad }}</td>
-                    <td style="background-color: #4EFC43;">{{ pago.FechaPago }}</td>
-                    <td style="background-color: #4EFC43;">{{ pago.Total }}</td>
-                    <td style="background-color: #4EFC43;">
-                        <a href="{% url 'actualizar_ingreso' id=pago.id %}" class="btn btn-info">Actualizar</a>
-                    </td>
-                    <td style="background-color: #4EFC43;">
-                        <a href="{% url 'eliminar_ingreso' id=pago.id %}" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">Eliminar</a>
-                    </td>
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<style>
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .no-tarjetas {
+        text-align: center;
+        background-color: #ffffff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 10px;
+    }
+</style>
+{% if pagos %}
+<h2 class="text-center">Historial de Ingresos</h2>
+<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Fecha de pago</th>
+                <th scope="col">Total</th>
+                <th scope="col">Actualizar</th>
+                <th scope="col">Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pago in pagos %}
+            {% if pago.Tipo == 'Gasto' %}
+            <tr>
+                <td style="background-color: #FF3838;">{{ pago.Nombre }}</td>
+                <td style="background-color: #FF3838">{{ pago.Cantidad }}</td>
+                <td style="background-color: #FF3838;">{{ pago.FechaPago }}</td>
+                <td style="background-color: #FF3838;">{{ pago.Total }}</td>
+                <td style="background-color: #FF3838;">
+                    <a href="{% url 'actualizar_gasto' id=pago.id %}" class="btn btn-info">Actualizar</a>
+                </td>
+                <td style="background-color: #FF3838;">
+                    <a href="{% url 'eliminar_gasto' id=pago.id %}" class="btn btn-danger"
+                        onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">Eliminar</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td style="background-color: #4EFC43;">{{ pago.Nombre }}</td>
+                <td style="background-color: #4EFC43">{{ pago.Cantidad }}</td>
+                <td style="background-color: #4EFC43;">{{ pago.FechaPago }}</td>
+                <td style="background-color: #4EFC43;">{{ pago.Total }}</td>
+                <td style="background-color: #4EFC43;">
+                    <a href="{% url 'actualizar_ingreso' id=pago.id %}" class="btn btn-info">Actualizar</a>
+                </td>
+                <td style="background-color: #4EFC43;">
+                    <a href="{% url 'eliminar_ingreso' id=pago.id %}" class="btn btn-danger"
+                        onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')">Eliminar</a>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+{% else %}
+<div class="no-tarjetas">
+    <h2>No hay historial disponible</h2>
+    <p>¡Agrega nuevos ingreos o gastos para empezar a gestionar tus finanzas!</p>
+    <!-- Puedes agregar aquí algún enlace o botón para agregar tarjetas -->
+</div>
+{% endif %}
 {% endblock %}

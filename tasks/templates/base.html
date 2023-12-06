@@ -96,7 +96,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav ml-auto"> <!-- ml-auto para alinear a la derecha -->
+                <div class="navbar-nav ml-auto">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -104,12 +104,23 @@
                             Mis Finanzas
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/tasks/">Mis Finanzas</a></li>
+                            <li><a class="dropdown-item" href="/tasks/">Historial</a></li>
                             <li><a class="dropdown-item" href="/tasks/createIngreso/">Agregar Ingreso</a></li>
                             <li><a class="dropdown-item" href="/tasks/createGasto/"">Agregar Gasto</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Tarjetas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/tarjetas/">Mis Tarjetas</a></li>
+                            <li><a class="dropdown-item" href="/tarjetas/addTarget/"">Agregar Tarjeta</a></li>
+                        </ul>
+                    </li>
                     <a class="nav-link ml-auto" href="/calendario/">Calendario</a>
+                    <a class="nav-link ml-auto" href="/cuentasClaras/">Cuentas claras</a>
                     <a class="nav-link ml-auto" href="/logout/">Logout</a>
                     {% else %}
                     <a class="nav-link" href="/signup/">Register</a>
@@ -122,7 +133,6 @@
 
     <header>
         <h1>Fianzas Coffee</h1>
-        <p>El mejor café de la ciudad</p>
     </header>
 
     <main class="container">

@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div class="table-container">
+        <table class="container d-flex align-items-center justify-content-center table table-striped table-info">
+            <thead>
+                <tr>
+                    <th scope="col">Dinero Disponible Total:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ dineroDisponible }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container d-flex align-items-center justify-content-center">
+        {% if gastos %}
+        <div class="table-container">
+            <h4>Fondos Actuales</h4>
+            <table class="table table-striped table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Tarjeta</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Fecha de corte</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ingreso in ingresos %}
+                    <tr>
+                        <td>{{ ingreso.tarjeta }}</td>
+                        <td>{{ ingreso.tarjeta.cantidadDisponible }}</td>
+                        <td>{{ ingreso.tarjeta.fechaPago }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Agrega fondos y métodos de pago.</h4>
+        </div>
+        {% endif %}
+
+        <div>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+        </div>
+
+        {% if gastos %}
+        <div class="table-container">
+            <h4>Próximos Gastos</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Fecha de pago</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gasto in gastos %}
+                    <tr>
+                        <td>{{ gasto.nombreGasto }}</td>
+                        <td>{{ gasto.cantidadGasto }}</td>
+                        <td>{{ gasto.fechaGasto }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">¡Felicidades, no tienes gastos futuros!</h4>
+        </div>
+        {% endif %}
+    </div>
+    <!-- Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="miModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Selecciona una tarjeta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="selectTarjetas">Tarjetas:</label>
+                    <select id="selectTarjetas" class="form-control">
+                        <!-- Opciones del select se agregarán dinámicamente con JavaScript -->
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="btnSi">Sí</button>
+                    <button type="button" class="btn btn-danger" id="btnNo">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fin del contenido de tu página -->
+
+    <!-- Tu script JavaScript aquí -->
+    <script>
+        var eventos = JSON.parse('{{ eventos_json|escapejs }}');
+        var tarjetas = JSON.parse('{{ tarjetas_json|escapejs }}');
+
+        $(document).ready(function () {
+            var today = new Date();
+            var respuesta = false;
+            var seleccion = 0;
+            eventos.forEach(element => {
+                var fechaElement = new Date(element.DATE);
+
+                if (today >= fechaElement) {
+                    // Mostrar la modal
+                    $('#miModal').modal('show');
+
+                    // Llenar el select con las opciones de tarjetas
+                    var selectTarjetas = $('#selectTarjetas');
+                    tarjetas.forEach(tarjeta => {
+                        selectTarjetas.append('<option value="' + tarjeta.idTarjeta + '">' + tarjeta.nombreTarjeta + '</option>');
+                    });
+                    // Manejar el evento clic del botón "Sí"
+                    $('#btnSi').click(function () {
+                        // Obtener el valor seleccionado del select
+                        seleccion = selectTarjetas.val();
+                        respuesta = true;
+                        var tarjetaSeleccionada = tarjetas.find(function (tarjeta) {
+                            return tarjeta.idTarjeta == seleccion;
+                        });
+                        if (element.GASTO > tarjetaSeleccionada.cantidadTarjeta) {
+                            mostrarAlerta("Fondos Insuicientes");
+                        } else {
+                            // Cerrar la modal
+                            $('#miModal').modal('hide');
+                            $.ajax({
+                                type: "POST",
+                                url: "{% url 'cuentasClaras' %}",
+                                data: {
+                                    'respuesta': respuesta,
+                                    'idEliminar': element.ID,
+                                    'idTarjeta': seleccion,
+                                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                                },
+                                success: function (data) {
+                                    // Manejar la respuesta del servidor si es necesario
+                                    console.log("data");
+                                }
+                            });
+                        }
+                    });
+
+                    // Manejar el evento clic del botón "No"
+                    $('#btnNo').click(function () {
+                        // Realizar acciones necesarias para la opción "No"
+                        respuesta = false;
+                        mostrarAlerta("La fecha de pago se recorrera para el dia de mañana");
+                        seleccion = 0;
+                        // Cerrar la modal
+                        $('#miModal').modal('hide');
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'cuentasClaras' %}",
+                            data: {
+                                'respuesta': respuesta,
+                                'idEliminar': element.ID,
+                                'idTarjeta': seleccion,
+                                'csrfmiddlewaretoken': '{{ csrf_token }}'
+                            },
+                            success: function (data) {
+                                // Manejar la respuesta del servidor si es necesario
+                                console.log("data");
+                            }
+                        });
+                    });
+                }
+            });
+
+        });
+        function mostrarAlerta(mensaje) {
+            alert(mensaje);
+        }
+    </script>
+</body>
+{% endblock %}
